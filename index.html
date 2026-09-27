@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Compress PDF files quickly and losslessly for text — reduce file size with smart image re-encoding.">
+    <title>PDF Studio — Smart, Lossless PDF Compression</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Top Navigation (matching QR Studio) -->
+    <header class="top-nav-wrapper">
+        <div class="container">
+            <nav class="top-nav">
+                <a class="brand" href="#">
+                    <div class="brand-icon">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                            <polyline points="14 2 14 8 20 8"></polyline>
+                            <line x1="16" y1="13" x2="8" y2="13"></line>
+                            <line x1="16" y1="17" x2="8" y2="17"></line>
+                            <polyline points="10 9 9 9 8 9"></polyline>
+                        </svg>
+                    </div>
+                    <span>PDF Studio</span>
+                </a>
+                <div class="nav-links">
+                    <a href="#features">Features</a>
+                    <a href="#how-it-works">How It Works</a>
+                    <a href="#about">About</a>
+                    <span class="nav-badge">Free v1.0</span>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Hero -->
+    <main class="hero">
+        <div class="container">
+            <div class="hero-grid" id="upload-section">
+                <!-- Left Column: Copy & Interactive Form -->
+                <div class="hero-copy">
+                    <p class="sub-title">Fast • Lossless Text • Smart Compression</p>
+                    <h1>Compress PDFs seamlessly in seconds.</h1>
+                    <p class="hero-text">
+                        Reduce your PDF file size without sacrificing crisp text readability. Re-encode embedded images with instant, customizable quality controls.
+                    </p>
+
+                    <form id="uploadForm" class="generator-form">
+                        <!-- Dropzone Area -->
+                        <div class="dropzone" id="dropZone">
+                            <input
+                                type="file"
+                                id="pdfFile"
+                                name="pdf"
+                                accept=".pdf"
+                                class="hidden-file-input"
+                                required
+                            >
+                            <div class="dropzone-icon">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                    <polyline points="17 8 12 3 7 8"></polyline>
+                                    <line x1="12" y1="3" x2="12" y2="15"></line>
+                                </svg>
+                            </div>
+                            <div class="dropzone-title">
+                                Drag &amp; drop your PDF here, or <span class="dropzone-browse-text">Browse</span>
+                            </div>
+                            <span class="dropzone-hint">Supports PDF files up to 100 MB</span>
+                        </div>
+
+                        <!-- Selected File Chip (Hidden until a file is selected) -->
+                        <div id="fileSelectedCard" class="file-selected-card" style="display: none;">
+                            <div class="file-selected-icon">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                    <polyline points="14 2 14 8 20 8"></polyline>
+                                </svg>
+                            </div>
+                            <div class="file-selected-details">
+                                <span id="fileNameText" class="file-selected-name">document.pdf</span>
+                                <span id="fileSizeText" class="file-selected-size">0 KB</span>
+                            </div>
+                            <button type="button" id="removeFileBtn" class="btn-icon" title="Remove file">&times;</button>
+                        </div>
+
+                        <!-- Quality Controls -->
+                        <div class="control-grid">
+                            <div class="control-item">
+                                <div class="control-header">
+                                    <span class="control-label">Compression Quality</span>
+                                    <span id="qualityBadge" class="control-value-badge">60%</span>
+                                </div>
+                                <div class="slider-container">
+                                    <input
+                                        type="range"
+                                        id="qualitySlider"
+                                        min="30"
+                                        max="90"
+                                        value="60"
+                                    >
+                                    <input
+                                        type="number"
+                                        id="qualityInput"
+                                        name="quality"
+                                        min="30"
+                                        max="90"
+                                        value="60"
+                                        class="number-input-mini"
+                                    >
+                                </div>
+                            </div>
+
+                            <!-- Quality Presets (matching QR Studio color presets) -->
+                            <div class="presets-section">
+                                <div class="preset-header">
+                                    <span class="preset-label">Quick Presets:</span>
+                                    <span id="presetActiveName" class="preset-active-name">Balanced (Recommended)</span>
+                                </div>
+                                <div class="preset-chips">
+                                    <button type="button" class="preset-chip" data-quality="30" data-name="Maximum (Smallest size)">
+                                        <span>Maximum</span>
+                                        <span class="preset-sub">Smallest (30)</span>
+                                    </button>
+                                    <button type="button" class="preset-chip active" data-quality="60" data-name="Balanced (Recommended)">
+                                        <span>Balanced</span>
+                                        <span class="preset-sub">Standard (60)</span>
+                                    </button>
+                                    <button type="button" class="preset-chip" data-quality="75" data-name="Crisp (High fidelity)">
+                                        <span>Crisp</span>
+                                        <span class="preset-sub">Sharper (75)</span>
+                                    </button>
+                                    <button type="button" class="preset-chip" data-quality="90" data-name="Light (Minimal compression)">
+                                        <span>Light</span>
+                                        <span class="preset-sub">Light (90)</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Submit & Progress -->
+                        <div class="form-actions">
+                            <button type="submit" id="uploadButton" class="btn-primary">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+                                    <polyline points="4 14 10 14 10 20"></polyline>
+                                    <polyline points="20 10 14 10 14 4"></polyline>
+                                    <line x1="14" y1="10" x2="21" y2="3"></line>
+                                    <line x1="3" y1="21" x2="10" y2="14"></line>
+                                </svg>
+                                <span>Compress PDF</span>
+                            </button>
+                            <div id="progressWrap" class="progress-wrap">
+                                <div id="progressBar" class="progress-bar"></div>
+                            </div>
+                            <p id="status" class="status-msg"></p>
+                        </div>
+                    </form>
+
+                    <div class="badge-row">
+                        <span>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                            Lossless Text
+                        </span>
+                        <span>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                            Instant Download
+                        </span>
+                        <span>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                            Auto Server Cleanup
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Right Column: Hero Card & Live Inspector -->
+                <div class="hero-card" aria-label="Compression preview and results">
+                    <div id="inspectorWindow" class="inspector-window">
+                        <!-- Empty State -->
+                        <div id="inspectorEmpty" class="inspector-empty">
+                            <div class="doc-mockup">
+                                <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                    <polyline points="14 2 14 8 20 8"></polyline>
+                                    <line x1="16" y1="13" x2="8" y2="13"></line>
+                                    <line x1="16" y1="17" x2="8" y2="17"></line>
+                                </svg>
+                                <span class="doc-badge">PDF</span>
+                            </div>
+                            <h4>Live Inspector</h4>
+                            <p>Upload a PDF document to view real-time size reduction analysis and instant downloads.</p>
+                        </div>
+
+                        <!-- Processing State -->
+                        <div id="inspectorProcessing" class="inspector-processing">
+                            <div class="pulse-ring">
+                                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <polyline points="23 4 23 10 17 10"></polyline>
+                                    <polyline points="1 20 1 14 7 14"></polyline>
+                                    <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+                                </svg>
+                            </div>
+                            <div class="processing-text">
+                                <h4>Compressing PDF...</h4>
+                                <p>Optimizing embedded images and rebuild streams</p>
+                            </div>
+                        </div>
+
+                        <!-- Results State -->
+                        <div id="inspectorResults" class="inspector-results">
+                            <div class="results-header">
+                                <span class="results-title">Compression Complete</span>
+                                <span id="savingsPill" class="savings-pill">-0% Saved</span>
+                            </div>
+
+                            <div class="stats-card">
+                                <div class="stat-row">
+                                    <span class="stat-label">File Name</span>
+                                    <span id="resFileName" class="stat-value" style="max-width: 170px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">file.pdf</span>
+                                </div>
+                                <div class="stat-row">
+                                    <span class="stat-label">Original Size</span>
+                                    <span id="resOriginalSize" class="stat-value">0 KB</span>
+                                </div>
+                                <div class="stat-row">
+                                    <span class="stat-label">Compressed Size</span>
+                                    <span id="resCompressedSize" class="stat-value success">0 KB</span>
+                                </div>
+                                <div class="stat-row">
+                                    <span class="stat-label">Saved</span>
+                                    <span id="resSavedSize" class="stat-value success">0 KB</span>
+                                </div>
+                                <div class="stat-row">
+                                    <span class="stat-label">Images Processed</span>
+                                    <span id="resImages" class="stat-value">0</span>
+                                </div>
+                                <div class="stat-row">
+                                    <span class="stat-label">JPEG Quality</span>
+                                    <span id="resQualityUsed" class="stat-value">60</span>
+                                </div>
+                            </div>
+
+                            <!-- Comparison Bar -->
+                            <div class="compare-bar-wrap">
+                                <div class="compare-bar-label">
+                                    <span>Reduction</span>
+                                    <span id="comparePercentLabel">0%</span>
+                                </div>
+                                <div class="compare-bar-track">
+                                    <div id="compareBarFill" class="compare-bar-fill" style="width: 0%;"></div>
+                                </div>
+                            </div>
+
+                            <div class="preview-actions" style="margin-top: 0.5rem; display: flex; flex-direction: column; gap: 0.75rem;">
+                                <a href="#" id="resDownloadBtn" class="btn-download" download>
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                        <polyline points="7 10 12 15 17 10"></polyline>
+                                        <line x1="12" y1="15" x2="12" y2="3"></line>
+                                    </svg>
+                                    Download PDF
+                                </a>
+                                <button type="button" id="resetBtn" class="btn-secondary" style="width: 100%;">
+                                    Compress Another PDF
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Features Section (matching QR Studio) -->
+    <section id="features" class="features">
+        <div class="container">
+            <div class="section-heading">
+                <p class="eyebrow">Why Choose PDF Studio</p>
+                <h2>Engineered for clarity and performance</h2>
+            </div>
+
+            <div class="card-grid">
+                <article class="feature-card">
+                    <div class="feature-icon-wrapper">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="4 7 4 4 20 4 20 7"></polyline>
+                            <line x1="9" y1="20" x2="15" y2="20"></line>
+                            <line x1="12" y1="4" x2="12" y2="20"></line>
+                        </svg>
+                    </div>
+                    <h3>Crisp Vector Text</h3>
+                    <p>Unlike basic tools that turn pages into blurry images, text and typography remain pure vector objects — selectable, copyable, and pin-sharp.</p>
+                </article>
+
+                <article class="feature-card">
+                    <div class="feature-icon-wrapper">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="3"></circle>
+                            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                        </svg>
+                    </div>
+                    <h3>Smart Image Optimization</h3>
+                    <p>Heavy embedded raster photos are extracted and re-encoded using high-performance algorithms, stripping bloated metadata and saving maximum space.</p>
+                </article>
+
+                <article class="feature-card">
+                    <div class="feature-icon-wrapper">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                        </svg>
+                    </div>
+                    <h3>Private &amp; Auto-Cleaned</h3>
+                    <p>Your documents are processed securely in an ephemeral workspace and deleted immediately upon download, keeping your files safe and confidential.</p>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section id="how-it-works" class="how-it-works">
+        <div class="container">
+            <div class="section-heading">
+                <p class="eyebrow">Simple Workflow</p>
+                <h2>Three steps to lightweight documents</h2>
+            </div>
+
+            <div class="steps-grid">
+                <div class="step-card">
+                    <span class="step-number">01</span>
+                    <h3>Select or Drop PDF</h3>
+                    <p>Drag your document into the upload zone or click to browse from your device. Up to 100 MB per file.</p>
+                </div>
+                <div class="step-card">
+                    <span class="step-number">02</span>
+                    <h3>Choose Quality Preset</h3>
+                    <p>Select your ideal balance between file weight and picture crispness using our quick preset buttons or precision slider.</p>
+                </div>
+                <div class="step-card">
+                    <span class="step-number">03</span>
+                    <h3>Instant Download</h3>
+                    <p>Grab your compressed PDF right away with clear savings metrics, ready to email, upload, or archive.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Call To Action Box (matching QR Studio) -->
+    <section id="about" class="cta-section">
+        <div class="container">
+            <div class="cta-box">
+                <div>
+                    <p class="eyebrow">Ready to begin?</p>
+                    <h2>Make your PDFs faster and easier to share.</h2>
+                </div>
+                <a href="#upload-section" class="cta-button">Start Compressing</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer (matching QR Studio) -->
+    <footer class="footer">
+        <div class="container footer-inner">
+            <p>© 2026 PDF Studio. Built for modern digital sharing By Fahad Shaik.</p>
+            <p>High-efficiency document processing powered by MuPDF &amp; Sharp.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
